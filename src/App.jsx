@@ -8,25 +8,31 @@ const threshold = 3; // acceptable Levenshtein distance threshold
 
 const App = () => {
   const [query, setQuery] = useState("");
+  const [tagFilter, setTagFilter] = useState(null); // { field: 'actor', value: 'Mahira Khan' }
 
-  // Filter videos based on user's query, and log the distance for each video.
+  const handleTagClick = (field, value) => {
+    setQuery(""); // clear manual query if tag is selected
+    setTagFilter({ field, value });
+    console.log(`Tag clicked: Field: ${field}, Value: ${value}`);
+  };
+
+  // If tagFilter is active, filter by that exact field; otherwise use fuzzy drama name filtering.
   const filteredVideos = videoData.filter((video) => {
-    const storedName = video.dramaName.toLowerCase();
-    const userQuery = query.toLowerCase().trim();
-
-    // If the search box is empty, just show all videos.
-    if (userQuery === "") return true;
-
-    // Calculate the Levenshtein distance between query and stored drama name.
-    const distance = leven(userQuery, storedName);
-
-    // Log the distance so people can see what's going on.
-    console.log(
-      `Comparing "${userQuery}" with "${storedName}" => Distance: ${distance}`
-    );
-
-    // Return true if the distance is within threshold or the stored name includes the query.
-    return distance <= threshold || storedName.includes(userQuery);
+    if (tagFilter) {
+      return (
+        String(video[tagFilter.field]).toLowerCase() ===
+        String(tagFilter.value).toLowerCase()
+      );
+    } else {
+      const storedName = video.dramaName.toLowerCase();
+      const userQuery = query.toLowerCase().trim();
+      if (userQuery === "") return true;
+      const distance = leven(userQuery, storedName);
+      console.log(
+        `Comparing "${userQuery}" with "${storedName}" => Distance: ${distance}`
+      );
+      return distance <= threshold || storedName.includes(userQuery);
+    }
   });
 
   return (
@@ -36,7 +42,21 @@ const App = () => {
           Drama Video Search
         </h1>
         <SearchBar query={query} setQuery={setQuery} />
-        <VideoList videos={filteredVideos} />
+        {tagFilter && (
+          <div className="mb-4 text-center">
+            <p className="text-gray-700">
+              Filtering by {tagFilter.field}:{" "}
+              <span className="font-bold">{tagFilter.value}</span>
+            </p>
+            <button
+              onClick={() => setTagFilter(null)}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded mt-2"
+            >
+              Clear Filter
+            </button>
+          </div>
+        )}
+        <VideoList videos={filteredVideos} onTagClick={handleTagClick} />
       </div>
     </div>
   );
