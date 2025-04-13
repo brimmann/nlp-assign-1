@@ -1,22 +1,22 @@
 import React from "react";
 
 const VideoCard = ({ video, onTagClick }) => {
-  // Build tags for each searchable field.
+  // Build tags for each searchable field including year.
   const tags = [
-    { label: video.dramaName, field: "dramaName" },
-    { label: video.year, field: "year" },
-    { label: video.actor, field: "actor" },
-    { label: video.director, field: "director" },
-    { label: video.producer, field: "producer" },
-    { label: video.writer, field: "writer" },
+    { field: "title", label: video.dramaName },
+    { field: "actor", label: video.actor },
+    { field: "director", label: video.director },
+    { field: "producer", label: video.producer },
+    { field: "writer", label: video.writer },
+    { field: "year", label: String(video.year) },
   ];
 
   return (
-    <div className="bg-white shadow-md rounded-md overflow-hidden flex flex-col md:flex-row">
+    <div className="bg-white shadow-md rounded-md overflow-hidden flex flex-col md:flex-row h-58">
       <img
         src={video.thumbnail}
         alt={video.dramaName}
-        className="w-full h-48 object-cover md:w-48 md:h-full max-h-[220px]"
+        className="w-full h-full object-cover md:w-48"
       />
       <div className="p-4 flex flex-col justify-between">
         <div>
