@@ -3,7 +3,6 @@ import React from "react";
 const VideoCard = ({ video, onTagClick }) => {
   // Build tags for each searchable field including year.
   const tags = [
-    { field: "title", label: video.dramaName },
     { field: "actor", label: video.actor },
     { field: "director", label: video.director },
     { field: "producer", label: video.producer },
